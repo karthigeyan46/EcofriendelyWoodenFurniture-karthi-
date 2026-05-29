@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - GreenWood Furniture</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #214d33 0%, #2d6a47 100%);
+        }
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-header img {
+            height: 60px;
+            margin-bottom: 15px;
+        }
+        .login-header h2 {
+            color: #214d33;
+            margin-bottom: 10px;
+        }
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            color: #214d33;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .form-group input {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 16px;
+        }
+        .form-group input:focus {
+            border-color: #214d33;
+            box-shadow: 0 0 0 3px rgba(33, 77, 51, 0.1);
+        }
+        .btn-primary-custom {
+            background: #214d33;
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            width: 100%;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn-primary-custom:hover {
+            background: #1a3a26;
+            color: white;
+        }
+        .toggle-login {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .toggle-login a {
+            color: #214d33;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .toggle-login a:hover {
+            text-decoration: underline;
+        }
+        .otp-container {
+            display: none;
+        }
+        .otp-input-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+        }
+        .otp-input:focus {
+            border-color: #214d33;
+            outline: none;
+        }
+        .timer {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        .timer.expired {
+            color: #d32f2f;
+        }
+        .alert {
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+        .success-message {
+            text-align: center;
+            color: #22c55e;
+            font-weight: 600;
+            display: none;
+        }
+        .test-otp {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark custom-nav">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="index.html">
+          <img src="logo.png" alt="GreenWood Logo" class="navbar-logo">
+          GreenWood
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+                <li class="nav-item"><a class="nav-link" href="woods.html">Wood Types</a></li>
+                <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <img src="logo.png" alt="GreenWood Logo">
+            <h2>GreenWood</h2>
+            <p>Eco-Friendly Wooden Furniture</p>
+        </div>
+
+        <div id="errorAlert" class="alert alert-danger" style="display: none;"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <!-- Phone/Email Input Form -->
+        <div id="contactForm">
+            <div class="form-group">
+                <label>Select Login Method</label>
+                <div class="btn-group w-100" role="group">
+                    <input type="radio" class="btn-check" name="loginMethod" id="phoneMethod" value="phone" checked>
+                    <label class="btn btn-outline-secondary w-50" for="phoneMethod">
+                        <i class="fas fa-phone"></i> Phone
+                    </label>
+                    <input type="radio" class="btn-check" name="loginMethod" id="emailMethod" value="email">
+                    <label class="btn btn-outline-secondary w-50" for="emailMethod">
+                        <i class="fas fa-envelope"></i> Email
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="contactInput" id="contactLabel">Phone Number</label>
+                <input type="text" id="contactInput" class="form-control" placeholder="Enter your phone number" required>
+            </div>
+
+            <button type="button" class="btn-primary-custom" onclick="sendOTP()">
+                <i class="fas fa-paper-plane"></i> Send OTP
+            </button>
+
+            <div class="test-otp" id="testOtpDiv" style="display: none;">
+                Test OTP: <strong id="testOtpCode"></strong>
+            </div>
+        </div>
+
+        <!-- OTP Verification Form -->
+        <div id="otpForm" class="otp-container">
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                Enter the 6-digit OTP sent to <strong id="contactDisplay"></strong>
+            </p>
+
+            <label style="display: block; text-align: center; color: #214d33; margin-bottom: 10px;">Enter OTP</label>
+            <div class="otp-input-group">
+                <input type="text" class="otp-input" maxlength="1" data-index="0">
+                <input type="text" class="otp-input" maxlength="1" data-index="1">
+                <input type="text" class="otp-input" maxlength="1" data-index="2">
+                <input type="text" class="otp-input" maxlength="1" data-index="3">
+                <input type="text" class="otp-input" maxlength="1" data-index="4">
+                <input type="text" class="otp-input" maxlength="1" data-index="5">
+            </div>
+
+            <div class="timer" id="timerDiv">
+                Expires in: <span id="timerCount">60</span>s
+            </div>
+
+            <button type="button" class="btn-primary-custom" onclick="verifyOTP()" style="margin-top: 20px;">
+                <i class="fas fa-check"></i> Verify OTP
+            </button>
+
+            <div class="toggle-login" style="margin-top: 20px;">
+                <a onclick="goBack()"><i class="fas fa-arrow-left"></i> Change Number/Email</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 footer-col">
+        <h5>ABOUT</h5>
+        <p>Premium eco-friendly wooden furniture manufacturer. Handcrafted pieces with responsibly sourced timber.</p>
+      </div>
+
+      <div class="col-md-2 footer-col">
+        <h5>GROUP COMPANIES</h5>
+        <ul class="footer-links">
+          <li><a href="#">Myntra</a></li>
+          <li><a href="#">Cleartrip</a></li>
+          <li><a href="#">Shopsy</a></li>
+        </ul>
+      </div>
+
+      <div class="col-md-2 footer-col">
+        <h5>HELP</h5>
+        <ul class="footer-links">
+          <li><a href="#">Payments</a></li>
+          <li><a href="#">Shipping</a></li>
+          <li><a href="#">Cancellation & Returns</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+
+      <div class="col-md-2 footer-col">
+        <h5>CONSUMER POLICY</h5>
+        <ul class="footer-links">
+          <li><a href="#">Cancellation & Returns</a></li>
+          <li><a href="#">Terms Of Use</a></li>
+          <li><a href="#">Security</a></li>
+          <li><a href="#">Privacy</a></li>
+        </ul>
+      </div>
+
+      <div class="col-md-3 footer-col">
+        <h5>Mail Us</h5>
+        <p>
+          GreenWood Furniture<br>
+          4/223 Ettanaickenpatti, Pattampudur (P.O),<br>
+          Bengaluru, Karnataka, India
+        </p>
+        <div class="social-icons mt-3">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="row footer-bottom align-items-center">
+      <div class="col-md-8">
+        <p class="mb-0">© 2026 GreenWood Furniture | Eco Friendly Furniture Store</p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <p class="mb-0">Registered Office: 4/223 Ettanaickenpatti, Pattampudur (P.O), Bengaluru</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    let generatedOTP = '';
+    let timerInterval = null;
+    let contactInfo = '';
+    let loginMethod = 'phone';
+
+    // Radio button toggle for login method
+    document.querySelectorAll('input[name="loginMethod"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            loginMethod = e.target.value;
+            const label = document.getElementById('contactLabel');
+            const input = document.getElementById('contactInput');
+            if (loginMethod === 'phone') {
+                label.textContent = 'Phone Number';
+                input.placeholder = 'Enter your phone number';
+                input.type = 'tel';
+            } else {
+                label.textContent = 'Email Address';
+                input.placeholder = 'Enter your email address';
+                input.type = 'email';
+            }
+            input.value = '';
+        });
+    });
+
+    // OTP input auto-focus
+    document.querySelectorAll('.otp-input').forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            if (e.target.value.length === 1 && index < 5) {
+                document.querySelectorAll('.otp-input')[index + 1].focus();
+            }
+        });
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && index > 0 && !e.target.value) {
+                document.querySelectorAll('.otp-input')[index - 1].focus();
+            }
+        });
+    });
+
+    function sendOTP() {
+        const input = document.getElementById('contactInput').value.trim();
+        const errorAlert = document.getElementById('errorAlert');
+        errorAlert.style.display = 'none';
+
+        // Validation
+        if (!input) {
+            errorAlert.textContent = `Please enter a ${loginMethod === 'phone' ? 'phone number' : 'email address'}`;
+            errorAlert.style.display = 'block';
+            return;
+        }
+
+        if (loginMethod === 'phone' && !/^\d{10}$/.test(input.replace(/\D/g, ''))) {
+            errorAlert.textContent = 'Please enter a valid 10-digit phone number';
+            errorAlert.style.display = 'block';
+            return;
+        }
+
+        if (loginMethod === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input)) {
+            errorAlert.textContent = 'Please enter a valid email address';
+            errorAlert.style.display = 'block';
+            return;
+        }
+
+        // Generate OTP
+        generatedOTP = String(Math.floor(100000 + Math.random() * 900000));
+        contactInfo = input;
+
+        // Show test OTP in dev mode
+        document.getElementById('testOtpCode').textContent = generatedOTP;
+        document.getElementById('testOtpDiv').style.display = 'block';
+
+        // Switch to OTP form
+        document.getElementById('contactForm').style.display = 'none';
+        document.getElementById('otpForm').classList.add('otp-container');
+        document.getElementById('otpForm').style.display = 'block';
+        document.getElementById('contactDisplay').textContent = contactInfo;
+
+        // Clear OTP inputs
+        document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+        document.querySelectorAll('.otp-input')[0].focus();
+
+        // Start timer
+        startTimer();
+
+        console.log('OTP sent successfully. Test OTP:', generatedOTP);
+    }
+
+    function startTimer() {
+        let timeLeft = 60;
+        const timerCount = document.getElementById('timerCount');
+        const timerDiv = document.getElementById('timerDiv');
+
+        if (timerInterval) clearInterval(timerInterval);
+
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerCount.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerDiv.classList.add('expired');
+                timerCount.textContent = 'Expired';
+            }
+        }, 1000);
+    }
+
+    function verifyOTP() {
+        const otpInputs = document.querySelectorAll('.otp-input');
+        const enteredOTP = Array.from(otpInputs).map(input => input.value).join('');
+        const errorAlert = document.getElementById('errorAlert');
+        errorAlert.style.display = 'none';
+
+        if (enteredOTP.length !== 6) {
+            errorAlert.textContent = 'Please enter a complete 6-digit OTP';
+            errorAlert.style.display = 'block';
+            return;
+        }
+
+        if (enteredOTP === generatedOTP) {
+            // Success
+            clearInterval(timerInterval);
+            document.getElementById('otpForm').style.display = 'none';
+            document.getElementById('successMessage').textContent = '✓ Login Successful! Redirecting...';
+            document.getElementById('successMessage').style.display = 'block';
+
+            // Store session
+            localStorage.setItem('greenwood_user', JSON.stringify({
+                contact: contactInfo,
+                loginMethod: loginMethod,
+                loginTime: new Date().toISOString()
+            }));
+
+            // Redirect to home after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        } else {
+            errorAlert.textContent = 'Invalid OTP. Please try again.';
+            errorAlert.style.display = 'block';
+        }
+    }
+
+    function goBack() {
+        document.getElementById('contactForm').style.display = 'block';
+        document.getElementById('otpForm').style.display = 'none';
+        document.getElementById('testOtpDiv').style.display = 'none';
+        clearInterval(timerInterval);
+        document.getElementById('contactInput').value = '';
+        document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+    }
+
+    // Check if already logged in
+    window.addEventListener('load', () => {
+        const user = localStorage.getItem('greenwood_user');
+        if (user) {
+            window.location.href = 'index.html';
+        }
+    });
+</script>
+</body>
+</html>
